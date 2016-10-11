@@ -14,84 +14,63 @@ class ViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBOutlet weak var centerXConstraint: NSLayoutConstraint!
+    
     
     var dogs = [
         UIImage(named: "dog1")!,
         UIImage(named: "dog2")!,
         UIImage(named: "dog3")!,
-        UIImage(named: "dog4")!,
+        UIImage(named: "dog4")!
     ]
-
-    func flipImage() {
+    
+    func retriveFirstDog() -> UIImage {
         
-        UIView.transition(with: self.imageView , duration: 0.25, options: [.transitionFlipFromLeft], animations: { [weak self] in
-            
-            self?.imageView.image = self?.nextDogImage()
-
-        })
+        let dog = dogs.removeFirst()
+        dogs.append(dog)
+        return dog
         
     }
     
-    func nextDogImage() -> UIImage {
+    
+    func nextDog() {
+        UIView.transition(with: self.imageView, duration: 2, options: [.transitionFlipFromRight], animations: { [weak self] in
+            self?.imageView.image = self?.retriveFirstDog()
+        })
         
-        let firstDog = dogs.removeFirst()
-        dogs.append(firstDog)
-        return firstDog
+        
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(ViewController.flipImage), userInfo: nil, repeats: true)
+//        view.layoutIfNeeded()
         
-//        UIView.animate(withDuration: 2) { [weak self] in
-//            
-//            guard let centerX = self?.view.center.x else {
-//                return
-//            }
-//            
-//            self?.usernameTextField.center.x = centerX
-//            
-//        }
-//        
-//        
-//        UIView.animate(withDuration: 2, delay: 1, options: [], animations: {
-//            
-//            [weak self] in
-//            
-//            guard let centerX = self?.view.center.x else {
-//                return
-//            }
-//            
-//            self?.passwordTextField.center.x = centerX
-//            
-//        })
+        Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(ViewController.nextDog), userInfo: nil, repeats: true)
         
-        UIView.animate(withDuration: 2, animations: { [weak self] in
-            
-            guard let centerX = self?.view.center.x else {
-                return
-            }
-            
-            self?.usernameTextField.center.x = centerX
-
-            
         
-            }) { (success) in
-                
-                UIView.animate(withDuration: 2) { [weak self] in
-                    
-                    guard let centerX = self?.view.center.x else {
-                        return
-                    }
-                    
-                    self?.passwordTextField.center.x = centerX
-                    
-                }
-                
+        
+        UIView.animate(withDuration: 2, delay: 1, options: [], animations: { [weak self] in
+            
+            guard let centerX = self?.view.center.x else { return }
+            
+            self?.passwordTextField.center.x = centerX
+            
+            })
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.centerXConstraint.constant = 0
+        
+        UIView.animate(withDuration: 2) {
+            
+            self.view.layoutIfNeeded()
+            
         }
-        
         
     }
 
@@ -102,4 +81,3 @@ class ViewController: UIViewController {
 
 
 }
-
